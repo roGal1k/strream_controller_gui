@@ -233,28 +233,32 @@ int main(int, char**) {
 
             static int srcIdx = 0;
             static int tgtIdx = 0;
+            static bool deployReceiver = true;
             ImGui::SetNextItemWidth(-1);
             ImGui::Combo("##source", &srcIdx, kSourceLabels, IM_ARRAYSIZE(kSourceLabels));
             ImGui::SetNextItemWidth(-1);
             ImGui::Combo("##target", &tgtIdx, kTargetLabels, IM_ARRAYSIZE(kTargetLabels));
+            ImGui::Checkbox("Разворачивать приёмник", &deployReceiver);
 
             bool running = g_running.load();
             if (running) ImGui::BeginDisabled();
             const char* src = kSourceValues[srcIdx];
             const char* tgt = kTargetValues[tgtIdx];
+            const char* receiverMode = deployReceiver ? "with-receiver" : "no-receiver";
             std::string base = std::string("bash ") + kScriptsDir + "/stream_ctl.sh " + src + " " + tgt + " ";
-            std::string profileLabel = std::string(kSourceLabels[srcIdx]) + " -> " + kTargetLabels[tgtIdx];
+            std::string profileLabel = std::string(kSourceLabels[srcIdx]) + " -> " + kTargetLabels[tgtIdx] +
+                                        (deployReceiver ? "" : " (без приёмника)");
             if (ImGui::Button("Старт", ImVec2(-1, 0))) {
                 g_running = true;
-                runCommandAsync(profileLabel + ": старт", base + "start 2>&1");
+                runCommandAsync(profileLabel + ": старт", base + "start " + receiverMode + " 2>&1");
             }
             if (ImGui::Button("Стоп", ImVec2(-1, 0))) {
                 g_running = true;
-                runCommandAsync(profileLabel + ": стоп", base + "stop 2>&1");
+                runCommandAsync(profileLabel + ": стоп", base + "stop " + receiverMode + " 2>&1");
             }
             if (ImGui::Button("Статус", ImVec2(-1, 0))) {
                 g_running = true;
-                runCommandAsync(profileLabel + ": статус", base + "status 2>&1");
+                runCommandAsync(profileLabel + ": статус", base + "status " + receiverMode + " 2>&1");
             }
             if (running) {
                 ImGui::EndDisabled();
