@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=fantom-desktop control panel
+Comment=Панель управления потоками fantom-desktop (ezcap/encoder/webcam -> 188/212)
+Exec=/home/gera/fantom-desktop/tools/gui_control_panel/build/gui_control_panel
+Terminal=false
+X-GNOME-Autostart-enabled=true
